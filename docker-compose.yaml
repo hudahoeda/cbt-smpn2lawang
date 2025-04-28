@@ -4,21 +4,23 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=no
       - MOODLE_DATABASE_TYPE=pgsql
-      - MOODLE_DATABASE_HOST=${SUPABASE_DB_HOST}
-      - MOODLE_DATABASE_PORT_NUMBER=${SUPABASE_DB_PORT:-5432}
-      - MOODLE_DATABASE_NAME=${SUPABASE_DB_NAME}
-      - MOODLE_DATABASE_USER=${SUPABASE_DB_USER}
-      - MOODLE_DATABASE_PASSWORD=${SUPABASE_DB_PASSWORD}
-      - MOODLE_USERNAME=${MOODLE_USERNAME:-user}
+      - MOODLE_DATABASE_HOST=${PG_HOST}
+      - MOODLE_DATABASE_PORT_NUMBER=${PG_PORT:-5432}
+      - MOODLE_DATABASE_USER=${PG_USER}
+      - MOODLE_DATABASE_PASSWORD=${PG_PASSWORD}
+      - MOODLE_DATABASE_NAME=${PG_DATABASE}
+      - MOODLE_USERNAME=${MOODLE_USERNAME:-admin}
       - MOODLE_PASSWORD=${MOODLE_PASSWORD:-bitnami}
-      - MOODLE_EMAIL=${MOODLE_EMAIL:-user@example.com}
-      - MOODLE_SITE_NAME=${MOODLE_SITE_NAME:-New Site}
+      - MOODLE_EMAIL=${MOODLE_EMAIL:-admin@example.com}
+      - MOODLE_SITE_NAME=${MOODLE_SITE_NAME:-“My Moodle Site”}
+
     ports:
       - '8080:8080'
       - '8443:8443'
+
     volumes:
-      - 'moodle-data:/bitnami/moodle'
-      - 'moodledata-data:/bitnami/moodledata'
+      - moodle-data:/bitnami/moodle
+      - moodledata-data:/bitnami/moodledata
 
 volumes:
   moodle-data:
