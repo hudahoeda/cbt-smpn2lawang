@@ -1,0 +1,3 @@
+cbt.smpn2lawang.sch.id {
+    reverse_proxy localhost:9988
+}
