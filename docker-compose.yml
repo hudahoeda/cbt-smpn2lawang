@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+#  db:
+#    image: postgres:13 # You can specify a different Postgres version if needed
+#    container_name: exo_cbt_db
+#    environment:
+#      # These are used by the postgres image on first run & init script
+#      POSTGRES_USER: ${DB_USER}
+#      POSTGRES_PASSWORD: ${DB_PASS} # Changed from DB_PASSWORD
+#      POSTGRES_DB: ${DB_NAME}
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#      # Mount the init script and the dump file
+#      # Ensure exo-dump-master.sql is inside the ./db_init directory!
+#      - ./db_init:/docker-entrypoint-initdb.d
+#    # Expose port 5432 if you need to access the DB from your host machine
+#    ports:
+#      - "5432:5432"
+#    networks:
+#      - exo-cbt-net
+#    restart: unless-stopped
+
+  app:
+    # Using Ubuntu base image
+    image: ubuntu:latest # Changed from alpine:latest
+    container_name: exo_cbt_app
+    # depends_on: # Removed depends_on
+    #   - db
+    volumes:
+      # Mount your project directory (containing 'main' binary)
+      - .:/app
+      # Mount the storage directory from host
+      # Ensure STORAGE_PATH in .env points to the *host* path
+      - ${STORAGE_PATH}:/app/storage
+    working_dir: /app
+    # Command to run your application binary using bash (Ubuntu's default shell)
+    command: ["/bin/bash", "-c", "chmod +x ./main-amd64 && ./main-amd64"]
+    ports:
+      # Map port 9988 based on SERVER_PORT
+      - "${SERVER_PORT:-9988}:${SERVER_PORT:-9988}"
+    environment:
+      # Pass all necessary environment variables from .env file
+      # DB_HOST will now be read from the .env file
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+      - DB_TZ=${DB_TZ}
+      - TZ=${TZ}
+      - DB_SECURE_ENCRYPT=${DB_SECURE_ENCRYPT}
+      - DB_CONNECTION_MAX_LIFETIME=${DB_CONNECTION_MAX_LIFETIME}
+      - DB_CONNECTION_MAX_IDLE_TIME=${DB_CONNECTION_MAX_IDLE_TIME}
+      - DB_CONNECTION_MAX_IDLE_SIZE=${DB_CONNECTION_MAX_IDLE_SIZE}
+      - DB_CONNECTION_MAX_OPEN_SIZE=${DB_CONNECTION_MAX_OPEN_SIZE}
+
+      - SERVER_HOST=${SERVER_HOST}
+      - SERVER_PORT=${SERVER_PORT}
+      - SERVER_WS_ACTIVE=${SERVER_WS_ACTIVE}
+      - SERVER_ASSET_URL=${SERVER_ASSET_URL}
+      - SERVER_ASSET_CACHE_TIME_SECOND=${SERVER_ASSET_CACHE_TIME_SECOND}
+      - SERVER_CACHE_IN_EXAM_ENABLE=${SERVER_CACHE_IN_EXAM_ENABLE}
+      - SERVER_LOG_REQ_ACTIVE=${SERVER_LOG_REQ_ACTIVE}
+      - SERVER_WRITE_BUFFER_SIZE=${SERVER_WRITE_BUFFER_SIZE}
+      - SERVER_SECRET_LICENSE_KEY=${SERVER_SECRET_LICENSE_KEY}
+      - SERVER_BEHIND_PROXY=${SERVER_BEHIND_PROXY}
+      - SERVER_PROXY_REAL_API_HEADER=${SERVER_PROXY_REAL_API_HEADER}
+
+      # STORAGE_PATH is set for the container environment.
+      # The volume mount above uses the host path from the .env file.
+      - STORAGE_PATH=/app/storage
+
+      - SECURITY_RATE_LIMIT_ACTIVE=${SECURITY_RATE_LIMIT_ACTIVE}
+      - SECURITY_RATE_LIMIT_MAX=${SECURITY_RATE_LIMIT_MAX}
+      - SECURITY_RATE_LIMIT_EXP=${SECURITY_RATE_LIMIT_EXP}
+
+      - GOOGLE_DOC_ACTIVE=${GOOGLE_DOC_ACTIVE}
+      - GOOGLE_CREDENTIAL=${GOOGLE_CREDENTIAL}
+
+      - OPEN_AI_MODEL=${OPEN_AI_MODEL}
+      - OPEN_AI_ACTIVE=${OPEN_AI_ACTIVE}
+      - OPEN_AI_ACCESS_KEY=${OPEN_AI_ACCESS_KEY}
+    # networks: # Removed networks section for app
+    #   - exo-cbt-net
+    restart: unless-stopped
+
+# volumes: # Commented out unused volume definition
+#   postgres_data:
+#     driver: local
+
+# networks: # Commented out unused network definition
+#   exo-cbt-net:
+#     driver: bridge 
