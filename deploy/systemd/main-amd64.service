@@ -1,0 +1,22 @@
+[Unit]
+Description=Extraordinary CBT server (main-amd64)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__RUN_USER__
+Group=__RUN_GROUP__
+WorkingDirectory=__REPO_PATH__
+EnvironmentFile=__REPO_PATH__/.env
+Environment=APP_DIR=__REPO_PATH__
+Environment=LOG_DIR=__REPO_PATH__/logs
+ExecStart=__REPO_PATH__/deploy/scripts/run-main-amd64.sh
+Restart=always
+RestartSec=5
+LimitNOFILE=65535
+StandardOutput=append:__REPO_PATH__/logs/main-amd64.log
+StandardError=append:__REPO_PATH__/logs/main-amd64.log
+
+[Install]
+WantedBy=multi-user.target
