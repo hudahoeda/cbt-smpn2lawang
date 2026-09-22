@@ -1,0 +1,16 @@
+# Install to /etc/logrotate.d/cbt-main-amd64 (replace __REPO_PATH__).
+# The app writes via systemd `append:`, which holds the file open, so
+# copytruncate is required -- a rename would leave systemd writing to
+# the rotated inode.
+__REPO_PATH__/logs/main-amd64.log {
+    daily
+    rotate 7
+    maxsize 100M
+    missingok
+    notifempty
+    compress
+    delaycompress
+    copytruncate
+    su root root
+    create 0644 root root
+}

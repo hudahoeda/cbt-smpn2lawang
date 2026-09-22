@@ -2,6 +2,11 @@
 Description=Extraordinary CBT server (main-amd64)
 After=network-online.target
 Wants=network-online.target
+# Give up after 5 failed starts in 10 minutes instead of retrying forever.
+# A failing ecosystem license check used to loop here indefinitely and
+# tripped Cloudflare rate limiting on the vendor endpoint.
+StartLimitIntervalSec=600
+StartLimitBurst=5
 
 [Service]
 Type=simple
@@ -12,8 +17,8 @@ EnvironmentFile=__REPO_PATH__/.env
 Environment=APP_DIR=__REPO_PATH__
 Environment=LOG_DIR=__REPO_PATH__/logs
 ExecStart=__REPO_PATH__/deploy/scripts/run-main-amd64.sh
-Restart=always
-RestartSec=5
+Restart=on-failure
+RestartSec=60
 LimitNOFILE=65535
 StandardOutput=append:__REPO_PATH__/logs/main-amd64.log
 StandardError=append:__REPO_PATH__/logs/main-amd64.log
