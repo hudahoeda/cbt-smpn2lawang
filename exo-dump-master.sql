@@ -2,8 +2,10 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 16.1
--- Dumped by pg_dump version 16.1
+\restrict yWarCX28NEqYZYKYBQOAQ5d26PqnHeJbVvIIbVlD2a7J8rvMueNseuusvUCESJy
+
+-- Dumped from database version 16.11 (Postgres.app)
+-- Dumped by pg_dump version 16.11 (Postgres.app)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -698,7 +700,9 @@ CREATE TABLE public.soal_summaries (
     ds_point numeric(19,6) NOT NULL,
     addons text,
     created_at timestamp(0) without time zone,
-    total_done integer DEFAULT 0 NOT NULL
+    total_done integer DEFAULT 0 NOT NULL,
+    discrimination numeric(19,8) DEFAULT 0 NOT NULL,
+    distractor text
 );
 
 
@@ -799,6 +803,8 @@ INSERT INTO public.agamas (id, kode, nama, created_at, updated_at) VALUES ('6e4c
 INSERT INTO public.agamas (id, kode, nama, created_at, updated_at) VALUES ('dae66fe2-5785-4b44-892b-6a40c1c2e1f1', 'KATOLIK', 'Katolik', '2023-08-13 20:49:43', '2023-08-13 20:49:43');
 INSERT INTO public.agamas (id, kode, nama, created_at, updated_at) VALUES ('8194f3f2-501b-420f-a496-85fded97beb0', 'HINDU', 'Hindu', '2023-08-13 20:49:43', '2023-08-13 20:49:43');
 INSERT INTO public.agamas (id, kode, nama, created_at, updated_at) VALUES ('b835ff17-369c-4250-a565-000a06953adf', 'BUDHA', 'Budha', '2023-08-13 20:49:43', '2023-08-13 20:49:43');
+INSERT INTO public.agamas (id, kode, nama, created_at, updated_at) VALUES ('7c03497a-6df3-46db-9ff9-99a9c7b49b14', 'KONG_HU_CU', 'Kong Hu Cu', '2026-05-01 20:12:06', '2026-05-01 20:12:08');
+INSERT INTO public.agamas (id, kode, nama, created_at, updated_at) VALUES ('338dddd4-91b7-4a3c-b7d1-cb0979f222d8', 'KEPERCAYAAN_YME', 'Kepercayaan Terhadap Tuhan Yang Maha Esa', '2026-05-01 20:14:54', '2026-05-01 20:14:55');
 
 
 --
@@ -855,6 +861,7 @@ INSERT INTO public.devices (id, device_id, device_os, device_name, ip_address, c
 --
 
 INSERT INTO public.ecosystem_keys (id, payload, public_key, signature) VALUES ('01JRB0QH9JYVSKJ4VD0NS4HJV5', '{"name":"SMKN 43 JAKARTA","address":"JL. CIPULIR 1","city":"KOTA JAKARTA SELATAN","expired_at":1751116818}', '', 'ZPZLiOG+/TNV6ZmxLO5dgyHPFgCnEQ4IBLy/F1ds0w6QLwCkhH0YDWrAYu6ambOJtc5t9yXYrcXLr4CIjU770ILuQ/WVozcOGKF5MRpfyQ6paPlTI0fPhC3I7p7IAL+MigdzxwXP53k=');
+INSERT INTO public.ecosystem_keys (id, payload, public_key, signature) VALUES ('01KQHQEM30QDJHP6KXF6R8CQ7H', '{"name":"SD PAPUA HARAPAN","address":"","city":"KAB. JAYAPURA","expired_at":1784816982,"level":""}', '', '5hi5AhYu4qzJzJwu0M7smx6ZTQROrbA6A1E/X5F3NmwNiiLew5c6xaNdupkxcVEXDlkczERdan1UgBp8zQ5hXLaOii15+NZ0NOoqxhz3++J4niJCIXkop/b5gJFMwCw0jT9AuepRhY8=');
 
 
 --
@@ -1060,6 +1067,7 @@ INSERT INTO public.menus (code, title, "order") VALUES ('0025C', 'Delete shortcu
 -- Data for Name: personal_access_tokens; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+INSERT INTO public.personal_access_tokens (id, tokenable_type, tokenable_id, name, token, created_at, updated_at) VALUES (178, 'User', '3bdf7c0e-c22e-4643-869e-10dd8ea25b4d', 'Personal Access Token', '4e87e8dfa2d66ad42d941d0fca753c7d7523e137570d5225d0f3ebe9cabbc3e7', NULL, NULL);
 
 
 --
@@ -1287,10 +1295,10 @@ INSERT INTO public.settings (code, value) VALUES ('VERIFIED_DEVICE', 'N');
 INSERT INTO public.settings (code, value) VALUES ('AUTO_BLOCK', 'Y');
 INSERT INTO public.settings (code, value) VALUES ('MAX_COUNTER_OUT', '1');
 INSERT INTO public.settings (code, value) VALUES ('INSTANT_LOGO_1712LGX', '');
-INSERT INTO public.settings (code, value) VALUES ('INSTANT_NAME', 'SMKN 43 JAKARTA');
-INSERT INTO public.settings (code, value) VALUES ('INSTANT_CITY', 'KOTA JAKARTA SELATAN');
-INSERT INTO public.settings (code, value) VALUES ('INSTANT_ADDRESS', 'JL. CIPULIR 1');
 INSERT INTO public.settings (code, value) VALUES ('INSTANT_KOP_1712LGX', '');
+INSERT INTO public.settings (code, value) VALUES ('INSTANT_NAME', 'SD PAPUA HARAPAN');
+INSERT INTO public.settings (code, value) VALUES ('INSTANT_CITY', 'KAB. JAYAPURA');
+INSERT INTO public.settings (code, value) VALUES ('INSTANT_ADDRESS', '');
 
 
 --
@@ -1321,7 +1329,7 @@ INSERT INTO public.settings (code, value) VALUES ('INSTANT_KOP_1712LGX', '');
 -- Data for Name: tokens; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.tokens (id, token, status, created_at, updated_at, expired_at) VALUES ('9e0c2164-ef1f-4251-8e12-c9a5275312b7', 'QQWR', 0, '2025-03-30 19:19:41', '2025-03-31 14:09:03', '2025-03-30 19:34:41');
+INSERT INTO public.tokens (id, token, status, created_at, updated_at, expired_at) VALUES ('9e0c2164-ef1f-4251-8e12-c9a5275312b7', 'QQWR', 0, '2025-03-30 19:19:41', '2026-05-01 12:21:27', '2025-03-30 19:34:41');
 
 
 --
@@ -1360,7 +1368,7 @@ SELECT pg_catalog.setval('public.feature_infos_id_seq', 32, true);
 -- Name: personal_access_tokens_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.personal_access_tokens_id_seq', 176, true);
+SELECT pg_catalog.setval('public.personal_access_tokens_id_seq', 178, true);
 
 
 --
@@ -1821,4 +1829,6 @@ CREATE INDEX users_email_role_index ON public.users USING btree (email, role);
 --
 -- PostgreSQL database dump complete
 --
+
+\unrestrict yWarCX28NEqYZYKYBQOAQ5d26PqnHeJbVvIIbVlD2a7J8rvMueNseuusvUCESJy
 
